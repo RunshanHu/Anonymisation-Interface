@@ -22,6 +22,7 @@ paths:
         This endpoint is used to register a data-sharing event.
       tags:
         - anonymisation
+      operationId: registerSharingEvent
       parameters:
         - name: body
           in: body
@@ -49,6 +50,7 @@ paths:
         the DataId and requested budget.
       tags:
         - anonymisation
+      operationId: queryFromClient
       parameters:
         - name: body
           in: body
