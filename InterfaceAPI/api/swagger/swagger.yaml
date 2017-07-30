@@ -22,7 +22,7 @@ produces:
   - application/json
 paths:
   /interface/register:
-    # anonymisation register paths
+    # path for processing register event from User 
     x-swagger-router-controller: AnonyInterface 
     post:
       description: This endpoint is used to register a new data-sharing event. 
@@ -49,15 +49,15 @@ paths:
         "401":
           description: The operation is not allowed (unauthorised access, 
                        the token is invalid, etc.)
-  /interface/query:
-    # anonymisation query paths
+  /interface/queryFromUser:
+    # path for processing post from User client
     x-swagger-router-controller: AnonyInterface
     post:
       description: This endpoint is used to query the anonymised statistical 
                    the DataId and requested budget
       tags:
         - anonymisation
-      operationId: query
+      operationId: queryFromUser
       parameters:
         - name: body
           in: body
@@ -75,7 +75,6 @@ paths:
         "401":
           description: The operation is not allowed (unauthorised access,
                        the token is invalid, etc.)
-
 
 # complex objects have schema definitions
 definitions:
