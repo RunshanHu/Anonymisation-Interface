@@ -65,7 +65,7 @@ paths:
           required: true
           schema: 
             $ref: "#/definitions/QueryBody"
-      response:
+      responses:
         "200":
           description: The response body for a successful response
           schema:
@@ -95,8 +95,8 @@ definitions:
         type: string
         description: Indentifier of the requesting entity 
       token:
-        type: stirng
-        description: a crypto token to validate if the entity if allowed to
+        type: string
+        description: a crypto token to validate if the entity if allowed to 
                       perform the requested operation
       data_provider: 
         type: string
@@ -111,7 +111,7 @@ definitions:
         type: string
         description: Indentifier of the shared dataset
 
-  ResgisterResponse:
+  RegisterResponse:
     type: object
     description: HTTP response for a successful register operation
     required: 
