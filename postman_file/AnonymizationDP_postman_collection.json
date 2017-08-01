@@ -8,9 +8,9 @@
 	},
 	"item": [
 		{
-			"name": "Anonlymization test",
+			"name": "Anonlymization test - dsp",
 			"request": {
-				"url": "http://195.110.40.69:50001/api/v1/test",
+				"url": "http://9.148.228.69:50001/api/v1/test",
 				"method": "GET",
 				"header": [],
 				"body": {},
@@ -21,7 +21,7 @@
 		{
 			"name": "Anonlymization post dp configuration",
 			"request": {
-				"url": "http://195.110.40.69:50001/api/v1/micro/configuration",
+				"url": "http://9.148.228.69:50001/api/v1/macro/configuration",
 				"method": "POST",
 				"header": [
 					{
@@ -41,7 +41,7 @@
 		{
 			"name": "Anonymization upload file (regular)",
 			"request": {
-				"url": "http://195.110.40.69:50001/api/v1/file",
+				"url": "http://9.148.228.69:50001/api/v1/file",
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -62,30 +62,30 @@
 			"name": "Calculate DP",
 			"request": {
 				"url": {
-					"raw": "http://195.110.40.69:50001/api/v1/micro?configuration=8763f292-8ee5-4de6-981c-5f595f6ec5a7&file=fb730a5f-f8a8-40d4-acb3-72a01ddf4385",
+					"raw": "http://9.148.228.69:50001/api/v1/macro?configuration=7c2025a5-c6a7-4f57-a14d-a3a9099bb049&file=8b052902-ed7f-43de-8577-54fbe86b68cd",
 					"protocol": "http",
 					"host": [
-						"195",
-						"110",
-						"40",
+						"9",
+						"148",
+						"228",
 						"69"
 					],
 					"port": "50001",
 					"path": [
 						"api",
 						"v1",
-						"micro"
+						"macro"
 					],
 					"query": [
 						{
 							"key": "configuration",
-							"value": "8763f292-8ee5-4de6-981c-5f595f6ec5a7",
+							"value": "7c2025a5-c6a7-4f57-a14d-a3a9099bb049",
 							"equals": true,
 							"description": ""
 						},
 						{
 							"key": "file",
-							"value": "fb730a5f-f8a8-40d4-acb3-72a01ddf4385",
+							"value": "8b052902-ed7f-43de-8577-54fbe86b68cd",
 							"equals": true,
 							"description": ""
 						}
