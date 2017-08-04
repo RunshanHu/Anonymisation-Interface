@@ -22,7 +22,7 @@ var queryEventHandler = {
       method: 'POST',
       uri: 'http://localhost:60001/ri/anonymisation/queryOldRes',
       body: req,
-      headers: {'User-Agent': 'Anonymisation Interface'}
+      headers: {'User-Agent': 'Anonymisation Interface'},
       json: true //automatically stringfiles the body to JSON
     });
    },
