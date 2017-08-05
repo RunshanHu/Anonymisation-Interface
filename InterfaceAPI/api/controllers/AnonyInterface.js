@@ -13,7 +13,8 @@ function register(req, res, next) {
   /*
    * register a new data sharing event
    */
-
+   if(debug) console.log("--->Anonymisation Interface: register method called!");
+   res.status(400).end();
 }
 
 var queryEventHandler = {
