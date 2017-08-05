@@ -55,7 +55,7 @@ var test = {
 }
 
 function main() {
-  return test.sendResultToRI();
+  return test.getResultFromAnonyRI();
 }
 
 main().then(function(result){

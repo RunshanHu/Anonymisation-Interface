@@ -1,6 +1,7 @@
 'use strict';
 
-var request = require('request-promise');
+var rp = require('request-promise');
+var debug = true;
 
 module.exports = {register, queryFromUser};
 
@@ -18,18 +19,28 @@ function register(req, res, next) {
 var queryEventHandler = {
    queryRI: function(req) {
     // send the query to Registry Interface
-    return request({
+    if(debug) {
+      console.log("--->Anonymisation Interface: queryRI method called!");
+    }
+
+    return rp({
       method: 'POST',
       uri: 'http://localhost:60001/ri/anonymisation/queryOldRes',
-      body: req,
+      body: req.body,
       headers: {'User-Agent': 'Anonymisation Interface'},
       json: true //automatically stringfiles the body to JSON
     });
    },
 
-  getResultFromAnonyService: function(budget) {
+  getResultFromAnonyService: function(small_budget_flag, budget) {
     // query Anonymisation service using budget
-    return request({
+    if(debug) {
+      console.log("--->Anonymisation Interface: getResultFromAnonyService method called!");
+      if(small_budget_flag) console.log("---->using small budget: " + budget);
+        else console.log("---->using requested budget: " + budget)
+    }
+
+    return rp({
       method: 'GET',
       uri: 'http://195.110.40.69:50001/api/v1/macro',
       qs: {
@@ -43,29 +54,26 @@ var queryEventHandler = {
     }); 
   },
 
-  sendResultToRI: function() {
+  utilityCheck: function(options) {
     // send the anonymised result to Registry Interface
-    return request({
+    if(debug) {
+      console.log("--->Anonymisation Interface: utilityCheck method called!");
+    }
+
+    return rp({
       method: 'POST',
       uri: 'http://localhost:60001/ri/anonymisation/receiveAnonyRes',
-      body: {
-        "requestorID": "test_ID",
-        "token": "test_token",
-        "data_consumer": "test_consumer",
-        "dataID": "test_data_007",
-        "function_type": "test_function_type",
-        "budget_used": 10,
-        "anonymised_result": 111
-      },
+      body: options, 
       headers: {'User-Agent': 'Anonymisation Interface'},
       json: true
     });
   },
 
-  sendFinalResToUser: function() {
-    // send the final result to the user
-    
+  updateLedger: function(final_response) {
+    if(debug) console.log("--->Anonymisation Interface: updateLedger method called!");
+
   }
+
 
 };
 
@@ -74,10 +82,82 @@ function queryFromUser(req, res, next){
   /*
    * process a user query  
    */
-   res = queryEventHandler.queryRI(req)
-    .then(getResultFromAnonyService)
-    .then(sendResultToRI)
-    .then();
+   var final_response = {
+       "data_provider": "sample",
+       "data_consumer": req.body.data_consumer,
+       "time_stamp": "smaple",
+       "dataID": req.body.dataID, 
+       "anonymised_result": 0
+   };
+
+  var small_budget;
+
+   queryEventHandler.queryRI(req)
+    .then(response => {
+      if(debug) {
+        console.log("---->response from <queryRI>: ");
+        console.log(response);
+      }
+      final_response.data_provider = response.data_provider;
+      final_response.time_stamp = response.time_stamp;
+      if(response.ifExist == 1) {
+        if(debug) console.log("---->old result exists");
+        var using_small_budget = 1;
+        small_budget = response.budget_used;
+        return queryEventHandler.getResultFromAnonyService(using_small_budget,small_budget)
+                .then(response_array => {
+                  var options = {
+                    "anonymised_result": response_array[1],
+                    "budget_used": small_budget, 
+                    "dataID": req.body.dataID,
+                    "data_consumer": req.body.data_consumer,
+                    "function_type": req.body.function_type,
+                    "requestorID": req.body.requestorID,
+                    "token": req.body.token,
+                  };
+                  return queryEventHandler.utilityCheck(options);
+                }).then(response => {
+                  if(debug) {
+                    console.log("---> response from RI-utilityCheck: ");
+                    console.log(response);
+                  }
+                  if(response.final_status == 0){
+                      if(debug) console(`---->utilityCheck fail and 
+                        not pass budget verification, return null result`);
+                      final_response.anonymised_result = response.final_result;
+                  } else if(response.final_status == 1){
+                            if(debug) console.log(`---->utilityCheck pass, return perturbed result`);
+                            final_response.anonymised_result = response.final_result;
+                  } else if (response.final_status == 2){
+                            if(debug) console.log(`---->utilityCheck not pass, 
+                              budget verification pass, return new result`);
+                            final_response.anonymised_result = response.final_result;
+                  }
+                  queryEventHandler.updateLedger(final_response);
+                });
+      }else{
+        if(debug) console.log("---->old result does not exist");
+        if(response.budget_used == req.body.request_budget){
+          if(debug) console.log("---->budget verification passed");
+            var not_using_small_budget = 0;
+            return queryEventHandler.getResultFromAnonyService(not_using_small_budget, response.budget_used)
+                    .then(response_array => {
+                      final_response.anonymised_result = response_array[1]; 
+                      queryEventHandler.updateLedger(final_response);
+                    });
+        }else {
+          if(debug) console.log("---->budget verification not passed, return null result");
+          final_response.anonymised_result = response.final_result;
+          queryEventHandler.updateLedger(final_response);
+        }
+      }
+    })
+    .catch(err => console.log);
+
+   res.setHeader('Content-Type', 'application/json');
+   //res.send(final_response);
+   res.send(final_response);
+ 
 }
 
 
