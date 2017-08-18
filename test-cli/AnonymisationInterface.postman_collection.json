@@ -1,0 +1,51 @@
+{
+	"variables": [],
+	"info": {
+		"name": "AnonymisationInterface",
+		"_postman_id": "72f3483a-4d3c-389b-67f1-4bc9e7f0fd23",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "AnonyInterfaceQuery",
+			"request": {
+				"url": "localhost:50005/anonymisation/interface/queryFromUser",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"requestorID\": \"string\",\n  \"token\": \"string\",\n  \"data_consumer\": \"string\",\n  \"dataID\": \"string\",\n  \"function_type\": \"string\",\n  \"request_budget\": 10\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "AnonyInterfaceRegister",
+			"request": {
+				"url": "localhost:50005/anonymisation/interface/register",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"requestorID\": \"string\",\n  \"token\": \"string\",\n  \"data_provider\": \"string\",\n  \"data_consumer\": \"string\",\n  \"time_stamp\": \"time-format\",\n  \"dataID\": \"string\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
