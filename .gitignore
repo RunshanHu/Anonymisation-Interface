@@ -6,5 +6,6 @@
 .swagger-codegen
 .swagger-codegen-ignore
 
-
+InterfaceAPI/*
+TestAnonyService/*
 
