@@ -1,8 +1,7 @@
 # Anonymisation-Interface
 Interface orchestrating Anonymisation and Registry Interface components
 
-
-##Usage guide
+## Usage guide
 
 1. Clone the git repository
 
