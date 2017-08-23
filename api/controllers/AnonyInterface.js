@@ -78,7 +78,13 @@ var queryEventHandler = {
 
     return rp({
       method: 'POST',
-      uri: 'http://localhost:60001/ri/anonymisation/receiveAnonyRes',
+      // uri: 'http://localhost:60001/ri/anonymisation/receiveAnonyRes',
+      uri: url.format({
+             protocol: 'http',
+             hostname: reqPara._utilityCheck.ip,
+             port: reqPara._utilityCheck.port,
+             pathname: reqPara._utilityCheck.path
+           }),
       body: options, 
       headers: {'User-Agent': 'Anonymisation Interface'},
       json: true
