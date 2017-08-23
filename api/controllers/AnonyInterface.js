@@ -1,6 +1,8 @@
 'use strict';
 
 var rp = require('request-promise');
+var url = require('url');
+var config = require('config');
 var debug = true;
 
 module.exports = {register, queryFromUser};
@@ -17,6 +19,7 @@ function register(req, res, next) {
    res.status(400).end();
 }
 
+var reqPara = config.get('request_parameter');
 var queryEventHandler = {
    queryRI: function(req) {
     // send the query to Registry Interface
@@ -26,7 +29,13 @@ var queryEventHandler = {
 
     return rp({
       method: 'POST',
-      uri: 'http://localhost:60001/ri/anonymisation/queryOldRes',
+      // uri: 'http://localhost:60001/ri/anonymisation/queryOldRes',
+      uri: url.format({
+             protocol: 'http',
+             hostname: reqPara._queryRI.ip,
+             port: reqPara._queryRI.port,
+             pathname: reqPara._queryRI.path
+           }),
       body: req.body,
       headers: {'User-Agent': 'Anonymisation Interface'},
       json: true //automatically stringfiles the body to JSON
@@ -43,7 +52,13 @@ var queryEventHandler = {
 
     return rp({
       method: 'GET',
-      uri: 'http://195.110.40.69:50001/api/v1/macro',
+      // uri: 'http://195.110.40.69:50001/api/v1/macro',
+      uri: url.format({
+             protocol: 'http',
+             hostname: reqPara._getResultFromAnonyService._IBMService.ip,
+             port: reqPara._getResultFromAnonyService._IBMService.port,
+             pathname: reqPara._getResultFromAnonyService._IBMService.path
+           }),
       qs: {
         configuration: '40ec8c43-ce90-4b13-968d-6cf962515159',
         file: 'ffbbcd8c-c4cb-4580-9687-9cd44ec34035'
