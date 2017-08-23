@@ -1,0 +1,4 @@
+default:
+  server:
+    host: localhost
+    port: 50001
