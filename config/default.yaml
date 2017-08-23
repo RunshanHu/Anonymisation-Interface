@@ -35,10 +35,6 @@ swagger:
       name: swagger_raw
 
 # any other values in this file are just loaded into the config for application access...
-server_setting:
-  ip: localhost
-  port: 50001
- 
 request_parameter:
   _queryRI:
     ip: localhost
