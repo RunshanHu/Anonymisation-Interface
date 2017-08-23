@@ -46,12 +46,12 @@ request_parameter:
     path: /ri/anonymisation/queryOldRes
 
   _getResultFromAnonyService:
-    _testSevice:
+    _testService:
       ip: localhost
       port: 8080
       path: /testsevice
     
-    _IBMservice:
+    _IBMService:
       ip: 195.110.40.69
       port: 50001
       path: /api/v1/macro
