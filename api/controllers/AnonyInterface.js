@@ -6,6 +6,7 @@ var config = require('config');
 var debug = true;
 
 module.exports = {register, queryFromUser};
+var reqPara = config.get('request_parameter');
 
 var registerEventHandler = {
     // end point for handle datasets register event
@@ -16,10 +17,45 @@ function register(req, res, next) {
    * register a new data sharing event
    */
    if(debug) console.log("--->Anonymisation Interface: register method called!");
-   res.status(400).end();
+   
+   var examples = {};
+   examples['application/json'] = {
+       "message" : "register failed"
+   };
+
+
+   rp({
+      method: 'POST',
+      uri: url.format({
+                        protocol: 'http',
+                        hostname: reqPara._registerRI.ip,
+                        port: reqPara._registerRI.port,
+                        pathname: reqPara._registerRI.path
+                     }),
+      body: req.body,
+      headers: {'User-Agent': 'Anonymisation Interface'},
+      json: true
+   }).then(response => {
+      examples['application/json'].message = response.message;
+      if(Object.keys(examples).length > 0) {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
+      } else {
+          res.end();
+      }
+   }).catch(err => {
+      console.log("---->AnonyInterface: register to RI failed!");
+      if(debug) console.log(err);
+      if(Object.keys(examples).length > 0) {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
+      } else {
+          res.end();
+      }
+   });
+
 }
 
-var reqPara = config.get('request_parameter');
 var queryEventHandler = {
    queryRI: function(req) {
     // send the query to Registry Interface
