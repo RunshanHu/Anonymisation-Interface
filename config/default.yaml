@@ -36,9 +36,14 @@ swagger:
 
 # any other values in this file are just loaded into the config for application access...
 request_parameter:
+  _registerRI:
+    ip: localhost
+    port: 8089
+    path: /ri/anonymisation/register
+
   _queryRI:
     ip: localhost
-    port: 60001
+    port: 8089
     path: /ri/anonymisation/queryOldRes
 
   _getResultFromAnonyService:
@@ -54,6 +59,6 @@ request_parameter:
       
   _utilityCheck:
     ip: localhost
-    port: 60001
+    port: 8089
     path: /ri/anonymisation/receiveAnonyRes
 
