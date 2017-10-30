@@ -148,6 +148,7 @@ definitions:
       - requestorID
       - token
       - data_consumer
+      - data_provider
       - dataID
       - function_type
       - request_budget
@@ -162,6 +163,9 @@ definitions:
       data_consumer: 
         type: string
         description: the name of the data consumer who receives a dataset
+      data_provider:
+        type: string
+        description: the name of the data provider who provide a dataset
       dataID:
         type: string
         description: the unique ID of a dataset
@@ -180,6 +184,7 @@ definitions:
       - data_consumer
       - time_stamp
       - dataID
+      - function_type
       - anonymised_result
     properties:
       data_provider:
@@ -194,6 +199,9 @@ definitions:
       dataID:
         type: string
         description: Indentifier of the shared dataset
+      function_type:
+        type: string
+        description: queried function type
       anonymised_result:
         type: number
         description: the anonymised result of the query function
