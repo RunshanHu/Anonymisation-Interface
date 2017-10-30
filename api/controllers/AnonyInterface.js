@@ -100,7 +100,7 @@ var queryEventHandler = {
         file: reqPara._getResultFromAnonyService._IBMService.file_key 
       }, 
       headers: {
-        'User-Agetn': 'Anonymisation Interface'
+        'User-Agent': 'Anonymisation Interface'
       },
       json: true
     }); 
@@ -129,9 +129,19 @@ var queryEventHandler = {
 
   updateLedger: function(final_response) {
     if(debug) console.log("--->Anonymisation Interface: updateLedger method called!");
-
+    rp({
+      method: 'POST',
+      uri: url.format({
+             protocol: 'http',
+             hostname: reqPara._updateLedger.ip,
+             port: reqPara._updateLedger.port,
+             pathname: reqPara._updateLedger.path
+           }),
+      body: final_response,
+      headers: {'User-Agent': 'Anonymisation Interface'},
+      json: true
+    });
   }
-
 
 };
 
@@ -145,6 +155,7 @@ function queryFromUser(req, res, next){
        "data_consumer": "error", 
        "time_stamp": "error",
        "dataID": "error", 
+       "function_type": "error",
        "anonymised_result": 0
    };
 
@@ -157,18 +168,19 @@ function queryFromUser(req, res, next){
         console.log(response);
       }
 
-      final_response.data_provider = args.body.value.data_provider;
-      final_response.data_consumer = args.body.value.data_consumer; 
-      final_response.time_stamp = args.body.value.time_stamp;
+      final_response.data_provider = req.body.data_provider;
+      final_response.data_consumer = req.body.data_consumer; 
+      final_response.function_type = req.body.function_type;
       final_response.dataID = response.dataID;
 
       if(response.ifExist == 1) {
         if(debug) console.log("---->old result exists");
         var using_small_budget = 1;
         small_budget = response.budget_used;
-        return queryEventHandler.getResultFromAnonyService(using_small_budget,small_budget)
+        queryEventHandler.getResultFromAnonyService(using_small_budget,small_budget)
                 .then(response_array => {
-                  var index = 1;
+                  console.log(response_array);
+                  var index = 0;
                   var options = {
                     "anonymised_result": response_array[index],
                     "budget_used": small_budget, 
@@ -178,6 +190,7 @@ function queryFromUser(req, res, next){
                     "requestorID": req.body.requestorID,
                     "token": req.body.token,
                   };
+                  console.log(options);
                   return queryEventHandler.utilityCheck(options);
                 }).then(response => {
                   if(debug) {
@@ -196,30 +209,42 @@ function queryFromUser(req, res, next){
                               budget verification pass, return new result`);
                             final_response.anonymised_result = response.final_result;
                   }
+                  res.setHeader('Content-Type', 'application/json');
+                  console.log("---->sending response");
+                  res.end(final_response);
                   queryEventHandler.updateLedger(final_response);
                 });
-      }else{
+      } else {
         if(debug) console.log("---->old result does not exist");
         if(response.budget_used == req.body.request_budget){
           if(debug) console.log("---->budget verification passed");
             var not_using_small_budget = 0;
-            return queryEventHandler.getResultFromAnonyService(not_using_small_budget, response.budget_used)
+            queryEventHandler.getResultFromAnonyService(not_using_small_budget, response.budget_used)
                     .then(response_array => {
-                      final_response.anonymised_result = response_array[1]; 
+                      var index = 0;
+                      final_response.anonymised_result = response_array[index];
                       queryEventHandler.updateLedger(final_response);
+                      res.setHeader('Content-Type', 'application/json');
+                      console.log("---->sending response");
+                      res.end(final_response);
                     });
-        }else {
+        } else {
           if(debug) console.log("---->budget verification not passed, return null result");
           final_response.anonymised_result = response.final_result;
           queryEventHandler.updateLedger(final_response);
+          res.setHeader('Content-Type', 'application/json');
+          console.log("---->sending response");
+          res.end(final_response);
         }
       }
-    })
-    .catch(err => console.log);
+      
+    }).catch(err => {
+      console.log(err);
+      res.setHeader('Content-Type', 'application/json');
+      console.log("---->sending response");
+      res.end(final_response);
+    });
 
-   res.setHeader('Content-Type', 'application/json');
-   //res.send(final_response);
-   res.send(final_response);
  
 }
 
