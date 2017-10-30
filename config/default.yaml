@@ -56,6 +56,8 @@ request_parameter:
       ip: 195.110.40.69
       port: 50001
       path: /api/v1/macro
+      configuration_key: 'key1'
+      file_key: 'key2'
       
   _utilityCheck:
     ip: localhost
