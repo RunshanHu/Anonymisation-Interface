@@ -119,9 +119,9 @@ definitions:
           type: string
         description: supported function types for users' query
       privacy_budget:
-        type: array
-        items:
-          type: string 
+        type: object 
+        additionalProperties:
+          type: number 
         description: privacy budget of each function type
       configuration_key:
         type: string
