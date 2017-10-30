@@ -96,8 +96,8 @@ var queryEventHandler = {
              pathname: reqPara._getResultFromAnonyService._IBMService.path
            }),
       qs: {
-        configuration: '40ec8c43-ce90-4b13-968d-6cf962515159',
-        file: 'ffbbcd8c-c4cb-4580-9687-9cd44ec34035'
+        configuration: reqPara._getResultFromAnonyService._IBMService.configuration_key,
+        file: reqPara._getResultFromAnonyService._IBMService.file_key 
       }, 
       headers: {
         'User-Agetn': 'Anonymisation Interface'
@@ -141,31 +141,36 @@ function queryFromUser(req, res, next){
    * process a user query  
    */
    var final_response = {
-       "data_provider": "sample",
-       "data_consumer": req.body.data_consumer,
-       "time_stamp": "smaple",
-       "dataID": req.body.dataID, 
+       "data_provider": "error",
+       "data_consumer": "error", 
+       "time_stamp": "error",
+       "dataID": "error", 
        "anonymised_result": 0
    };
 
   var small_budget;
 
-   queryEventHandler.queryRI(req)
+  queryEventHandler.queryRI(req)
     .then(response => {
       if(debug) {
         console.log("---->response from <queryRI>: ");
         console.log(response);
       }
-      final_response.data_provider = response.data_provider;
-      final_response.time_stamp = response.time_stamp;
+
+      final_response.data_provider = args.body.value.data_provider;
+      final_response.data_consumer = args.body.value.data_consumer; 
+      final_response.time_stamp = args.body.value.time_stamp;
+      final_response.dataID = response.dataID;
+
       if(response.ifExist == 1) {
         if(debug) console.log("---->old result exists");
         var using_small_budget = 1;
         small_budget = response.budget_used;
         return queryEventHandler.getResultFromAnonyService(using_small_budget,small_budget)
                 .then(response_array => {
+                  var index = 1;
                   var options = {
-                    "anonymised_result": response_array[1],
+                    "anonymised_result": response_array[index],
                     "budget_used": small_budget, 
                     "dataID": req.body.dataID,
                     "data_consumer": req.body.data_consumer,
