@@ -56,11 +56,17 @@ request_parameter:
       ip: 195.110.40.69
       port: 50001
       path: /api/v1/macro
-      configuration_key: 'key1'
-      file_key: 'key2'
+      configuration_key: '4b557b73-c4cd-497a-9194-82c4d1407a1a'
+      file_key: 'bdd832fc-873d-4a48-bf5b-07341297b9da'
       
   _utilityCheck:
     ip: localhost
     port: 8089
     path: /ri/anonymisation/receiveAnonyRes
+
+  _updateLedger:
+    ip: localhost
+    port: 8089
+    path: /ri/anonymisation/updateLedger
+
 
